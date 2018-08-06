@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} hello {% endblock %}
+
+{% block body %}
+    <style>
+        .example-wrapper {
+            text-align: center
+        }
+
+        .example-wrapper code {
+            background: #F5F5F5;
+            padding: 2px 6px
+        }
+
+        #register_button {
+            margin-left: 5px;
+        }
+    </style>
+
+    <div class="example-wrapper">
+        <h1>Login page:</h1>
+
+        {% if error %}
+            <span class="error text-danger"> {{ error.messageKey }} </span>
+        {% endif %}
+
+        <form action="{{ path('login') }}" method="POST">
+
+            <input type="text" name="_username" value="{{ last_username }}" placeholder="Username here ...">
+
+            <input type="password" name="_password">
+
+            <button type="submit">Login</button>
+
+            <a href="/register" id="register_button">Register</a>
+
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ order.name }} {% endblock %}
+
+{% block body %}
+    <h1>Order name: {{ order.name }}</h1>
+    <p>cpu: {{ order.cpu }}</p>
+    <p>ram: {{ order.ram }}</p>
+    <p>drive: {{ order.drive }}</p>
+    <p>screen: {{ order.screen }}</p>
+    <p>price: {{ order.price }}</p>
+    <hr>
+    <a href="/">Go Back</a>
+{% endblock %}

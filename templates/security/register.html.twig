@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} hello {% endblock %}
+
+{% block body %}
+    <style>
+        .example-wrapper {
+            text-align: center
+        }
+
+        .example-wrapper code {
+            background: #F5F5F5;
+            padding: 2px 6px
+        }
+
+        #register_button {
+            margin-left: 5px;
+        }
+    </style>
+
+    <div class="example-wrapper">
+        <h1>Register page:</h1>
+
+        {% if error %}
+            <span class="error text-danger"> {{ error.messageKey }} </span>
+        {% endif %}
+
+        {{ form_start(form) }}
+        {{ form_row(form.username) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.plainPassword.first) }}
+        {{ form_row(form.plainPassword.second) }}
+
+        <button type="submit">Register!</button>
+        {{ form_end(form) }}
+
+    </div>
+{% endblock %}
