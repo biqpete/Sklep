@@ -1,11 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} hello {% endblock %}
+{% block title %} Shop {% endblock %}
 
 {% block body %}
     <style>
         .example-wrapper {
-            text-align: center
+            text-align: center;
+            margin-top: 70px;
         }
 
         .example-wrapper code {
@@ -19,7 +20,13 @@
     </style>
 
     <div class="example-wrapper">
-        <h1>Login page:</h1>
+        <h1>{% trans %}Login page{% endtrans %}:</h1>
+
+        {% for message in app.flashes('notice') %}
+            <div class="flash-notice">
+                {{ message }}
+            </div>
+        {% endfor %}
 
         {% if error %}
             <span class="error text-danger"> {{ error.messageKey }} </span>
@@ -31,9 +38,9 @@
 
             <input type="password" name="_password">
 
-            <button type="submit">Login</button>
+            <button type="submit">{% trans %}Login{% endtrans %}</button>
 
-            <a href="/register" id="register_button">Register</a>
+            <a href="/register" id="register_button">{% trans %}Register{% endtrans %}</a>
 
         </form>
     </div>

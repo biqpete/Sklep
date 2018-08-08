@@ -53,6 +53,27 @@ class Order
      */
     private $date;
 
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $orderName;
+
+    /**
+     * @return string
+     */
+    public function getOrderName()
+    {
+        return $this->orderName;
+    }
+
+    /**
+     * @param string $orderName
+     */
+    public function setOrderName($orderName): void
+    {
+        $this->orderName = $orderName;
+    }
+
     public function getId()
     {
         return $this->id;

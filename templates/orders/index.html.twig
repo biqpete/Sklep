@@ -1,32 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} shop {% endblock %}
+{% block title %} Shop {% endblock %}
 
 {% block body %}
-    <h1> hello {{ app.user.username }}</h1>
+    <h1> {% trans  %} Hello  {% endtrans %} {{ app.user.username }}</h1>
     {% if orders %}
         <table id="orders" class="table table striped">
             <thead>
             <tr>
-                <th>Order Title</th>
-                <th>Actions</th>
+                <th>{% trans %}Order{% endtrans %}</th>
+                <th>{% trans %}Actions{% endtrans %}</th>
             </tr>
             </thead>
             <tbody>
             {% for order in orders %}
                 <tr>
-                    <td>{{ order.name }}</td>
+                    <td>{{ order.orderName }}</td>
                     <td>
-                        <a href="/order/{{ order.id }}" class="btn btn-dark">Show</a>
-                        <a href="/order/edit/{{ order.id }}" class="btn btn-light">Edit</a>
-                        <a href="#" class="btn btn-danger delete-order" data-id="{{ order.id }}">Delete</a>
+                        <a href="/order/{{ order.id }}" class="btn btn-dark">{% trans %}Show{% endtrans %}</a>
+                        <a href="/order/edit/{{ order.id }}" class="btn btn-light">{% trans %}Edit{% endtrans %}</a>
+                        <a href="#" class="btn btn-danger delete-order" data-id="{{ order.id }}">{% trans %}Delete{% endtrans %}</a>
                     </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     {% else %}
-        <p>No orders to display</p>
+        <p>{% trans %} No orders to display {% endtrans %}</p>
     {% endif %}
 {% endblock %}
 

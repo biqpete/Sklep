@@ -1,7 +1,7 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     encoders:
-        App\Entity\User: plaintext # dlaczego nie działa algorithm: bcrypt / sha / md5 ?   wyświetla "The algorithm bcrypt is not supported"
+        App\Entity\User: bcrypt
         FOS\UserBundle\Model\UserInterface: sha512
 
     providers:
@@ -38,4 +38,5 @@ security:
     access_control:
          - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
          - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+         - { path: ^/about, roles: IS_AUTHENTICATED_ANONYMOUSLY }
          - { path: ^/, roles: ROLE_USER }

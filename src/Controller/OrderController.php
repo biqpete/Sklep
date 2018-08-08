@@ -2,8 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Order;
+use App\Form\OrderTypeNew;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,17 +22,15 @@ class OrderController extends AbstractController
      * @Route("/", name="order_list")
      * @Method({"GET"})
      */
-    public function index()
+    public function index(Request $request)
     {
-        $orders = $this->getDoctrine()->getRepository(Order::class)->findAll();
-//        $orders = array(
-//            "name" => "hi",
-//            "cpu" => "i3",
-//            "ram" => 8,
-//            "drive" => 128,
-//            "screen" => 13,
-//            "price" => 2500
-//        );
+        $user = $this->getDoctrine()->getRepository(User::class)->find($this->getUser());
+        $username = $user->getUsername();
+
+        $orders = $this->getDoctrine()->getRepository(Order::class)->findBy([
+            'name' => $username
+        ]);
+
         return $this->render("orders/index.html.twig", array(
             'orders' => $orders
         ));
@@ -40,67 +42,13 @@ class OrderController extends AbstractController
      */
     public function new(Request $request)
     {
+        $user = $this->getDoctrine()->getRepository(User::class)->find($this->getUser());
+        $date = new \DateTime();
+        $result = $date->format('Y-m-d H:i:s');
         $order = new Order();
         $priceController = new PriceController();
 
-        $form = $this->createFormBuilder($order)
-            ->add('name', TextType::class, array('attr' =>
-                array('class' => 'form-control')))
-//            ->add('cpu', ChoiceType::class, array(
-//                'attr' => array('class' => 'form-control'),
-//                'choices'  => array(
-//                    'none' => '0',$order->setPrice(($order->getPrice())),
-//                    'i3' => 'i3',$order->setPrice(($order->getPrice())+200),
-//                    'i5' => 'i5',$order->setPrice(($order->getPrice())+400),
-//                    'i7' => 'i7',$order->setPrice(($order->getPrice())+600)
-//                )
-//            ))
-            ->add('cpu', ChoiceType::class, array(
-                'attr' => array('class' => 'form-control'),
-                'choices'  => array(
-                    'none' => null,
-                    'i3' => 'i3',
-                    'i5' => 'i5',
-                    'i7' => 'i7',
-                )
-            ))
-            ->add('ram', ChoiceType::class, array(
-                'attr' => array('class' => 'form-control'),
-                'choices'  => array(
-                    'none' => null,
-                    '8' => 8,
-                    '16' => 16,
-                    '32' => 32,
-                )
-            ))
-            ->add('drive', ChoiceType::class, array(
-                'attr' => array('class' => 'form-control'),
-                'choices'  => array(
-                    'none' => null,
-                    '128' => 128,
-                    '256' => 256,
-                    '512' => 512,
-                )
-            ))
-            ->add('screen', ChoiceType::class, array(
-                'attr' => array('class' => 'form-control'),
-                'choices'  => array(
-                    'none' => null,
-                    '10' => 10,
-                    '13' => 13,
-                    '15' => 15,
-                )
-            ))
-            ->add('price', TextType::class, array(
-                'attr' => array('class' => 'form-control'),
-                //'data' => $order->getPrice(),
-                'disabled' => 'true'
-            ))
-            ->add('save', SubmitType::class, array(
-                'label' => 'Create',
-                'attr' => array('class' => 'btn btn-primary mt-3')
-            ))
-            ->getForm();
+        $form = $this->createForm(OrderTypeNew::class, $order, $user);
 
         $form->handleRequest($request);
 
@@ -136,12 +84,11 @@ class OrderController extends AbstractController
      */
     public function edit(Request $request, $id)
     {
-        $order = new Order();
         $priceController = new PriceController();
         $order = $this->getDoctrine()->getRepository(Order::class)->find($id);
 
         $form = $this->createFormBuilder($order)
-            ->add('name', TextType::class, array('attr' =>
+            ->add('name', HiddenType::class, array('attr' =>
                 array('class' => 'form-control')))
 //            ->add('cpu', ChoiceType::class, array(
 //                'attr' => array('class' => 'form-control'),
@@ -152,9 +99,14 @@ class OrderController extends AbstractController
 //                    'i7' => 'i7',$order->setPrice(($order->getPrice())+600)
 //                )
 //            ))
+            ->add('orderName', TextType::class,[
+                'attr' => [
+                    'class' => 'form-control'
+                ]
+            ])
             ->add('cpu', ChoiceType::class, array(
                 'attr' => array('class' => 'form-control'),
-                'choices'  => array(
+                'choices' => array(
                     'none' => null,
                     'i3' => 'i3',
                     'i5' => 'i5',
@@ -163,7 +115,7 @@ class OrderController extends AbstractController
             ))
             ->add('ram', ChoiceType::class, array(
                 'attr' => array('class' => 'form-control'),
-                'choices'  => array(
+                'choices' => array(
                     'none' => null,
                     '8' => 8,
                     '16' => 16,
@@ -172,7 +124,7 @@ class OrderController extends AbstractController
             ))
             ->add('drive', ChoiceType::class, array(
                 'attr' => array('class' => 'form-control'),
-                'choices'  => array(
+                'choices' => array(
                     'none' => null,
                     '128' => 128,
                     '256' => 256,
@@ -181,7 +133,7 @@ class OrderController extends AbstractController
             ))
             ->add('screen', ChoiceType::class, array(
                 'attr' => array('class' => 'form-control'),
-                'choices'  => array(
+                'choices' => array(
                     'none' => null,
                     '10' => 10,
                     '13' => 13,
@@ -252,5 +204,38 @@ class OrderController extends AbstractController
 
         $response = new Response();
         $response->send();
+    }
+
+    /**
+     * @Route("/changeLocale", name="changeLocale" )
+     */
+    public function changeLocale(Request $request)
+    {
+        $form = $this->createFormBuilder(null)
+            ->add('locale', ChoiceType::class, [
+                'choices' => [
+                    'English' => 'en_EN',
+                    'Polski' => 'pl_PL'
+                ]
+            ])
+            ->add('save', SubmitType::class)
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $em = $this->getDoctrine()->getManager();
+            $locale = $form->getData()['locale'];
+
+            $user = $this->getUser();
+            $user->setLocale($locale);
+            $em->persist($user);
+            $em->flush();
+        }
+
+        return $this->render('orders/locale.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 }

@@ -1,9 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <style>
-        .logout
-          {
+        .logout {
             padding: 7px;
-          }
+        }
     </style>
     <div class="container">
         <a href="/" class="navbar-brand">Shop</a>
@@ -13,16 +12,27 @@
 
         <div class="collapse navbar-collapse" id="mobile-nav">
             <ul class="navbar-nav ml-auto">
-
+                {% if app.user %}
                 <li class="nav-item">
-                    <a href="/order/new" class="nav-link">New order</a>
+                    <a href="/order/new" class="nav-link">{% trans %}New order{% endtrans %}</a>
                 </li>
+                {% endif %}
                 <li class="nav-item">
                     <a href="/" class="nav-link">Home</a>
                 </li>
-                <li class="nav-item logout">
-                    <a href="{{ path('logout') }}">Logout</a>
+                <li class="nav-item">
+                    <a href="/about" class="nav-link">About</a>
                 </li>
+                {% if app.user %}
+                <li class="nav-item">
+                    <a href="{{ path('changeLocale') }}" class="nav-link">{% trans %}Change language{% endtrans %}</a>
+                </li>
+                {% endif %}
+                {% if app.user %}
+                <li class="nav-item logout">
+                    <a href="{{ path('logout') }}">{% trans %}Logout{% endtrans %}</a>
+                </li>
+                {% endif %}
             </ul>
         </div>
     </div>

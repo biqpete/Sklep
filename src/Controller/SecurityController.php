@@ -12,9 +12,11 @@ use App\Form\UserType;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 class SecurityController extends Controller
 {
@@ -43,17 +45,7 @@ class SecurityController extends Controller
     /**
      * @Route("/register", name="register")
      */
-//    public function register(Request $request, AuthenticationUtils $utils)
-//    {
-//        $error = $utils->getLastAuthenticationError();
-//        $lastUserName = $utils->getLastUsername();
-//
-//        return $this->render('security/register.html.twig', [
-//            'error' => $error,
-//            'last_username' => $lastUserName
-//        ]);
-//    }
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder,AuthenticationUtils $utils)
+    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, AuthenticationUtils $utils)
     {
         $error = $utils->getLastAuthenticationError();
         $lastUserName = $utils->getLastUsername();
@@ -72,19 +64,37 @@ class SecurityController extends Controller
             // 4) save the User!
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
-            $entityManager->flush();
 
-            // ... do any other work - like sending them an email, etc
-            // maybe set a "flash" success message for the user
+            try {
+                $entityManager->flush();
+            } catch (UniqueConstraintViolationException $e) {
+                $this->addFlash(
+                    'error',
+                    'This username is already taken.'
+                );
+                return $this->redirectToRoute('register');
+            }
+
+            $this->addFlash(
+                'notice',
+                'Registered!'
+            );
 
             return $this->redirectToRoute('login');
         }
 
         return $this->render(
             'security/register.html.twig', [
-                'form' => $form->createView(),
-                'error' => $error,
-                'last_username' => $lastUserName
-            ]);
+            'form' => $form->createView(),
+            'error' => $error,
+            'last_username' => $lastUserName
+        ]);
+    }
+
+    /**
+     * @Route("/about")
+     */
+    public function about(){
+        return $this->render('about.html.twig');
     }
 }

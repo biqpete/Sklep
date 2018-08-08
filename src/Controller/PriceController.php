@@ -85,7 +85,7 @@ class PriceController
             case 13:
                 $price += 400;
                 break;
-            case 16:
+            case 15:
                 $price += 600;
                 break;
         }
