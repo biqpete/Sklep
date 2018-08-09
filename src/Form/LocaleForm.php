@@ -10,6 +10,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\LanguageType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -20,15 +21,10 @@ class LocaleForm extends AbstractType
     public function buildForm(FormBuilderInterface $form, array $options)
     {
         $form
-        ->add('locale', ChoiceType::class, [
-        'choices' => [
-        'English' => 'en_EN',
-        'Polski' => 'pl_PL'
-        ]
-        ])
-        ->add('save', SubmitType::class);
+            ->add('locale', LanguageType::class)
+            ->add('save', SubmitType::class);
     }
-
+                                                            // nie działa gdy wywoływany LocaleForm, dlaczego?
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(

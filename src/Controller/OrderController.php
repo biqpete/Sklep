@@ -97,6 +97,7 @@ class OrderController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($order);
             $entityManager->flush();
 
             return $this->redirectToRoute('order_list');
@@ -135,30 +136,5 @@ class OrderController extends AbstractController
 
         $response = new Response();
         $response->send();
-    }
-
-    /**
-     * @Route("/changeLocale", name="changeLocale" )
-     */
-    public function changeLocale(Request $request)
-    {
-        $user = $this->getUser();
-        $form = $this->createForm(LocaleForm::class);
-
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() && $form->isValid())
-        {
-            $entityManager = $this->getDoctrine()->getManager();
-            $locale = $form->getData();
-
-            $user->setLocale($locale);
-            $entityManager->persist($user);
-            $entityManager->flush();
-        }
-
-        return $this->render('orders/locale.html.twig', [
-            'form' => $form->createView()
-        ]);
     }
 }

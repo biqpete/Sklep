@@ -13,31 +13,29 @@
             padding: 2px 6px
         }
 
-        #register_button {
-            margin-left: 5px;
-        }
     </style>
 
     <div class="example-wrapper">
+
         <h1>{% trans %}Register page{% endtrans %}:</h1>
         {% for message in app.flashes('error') %}
             <div class="flash-error">
-                {{ message }}
+                <span class="error text-danger"> {{ message }} </span>
             </div>
         {% endfor %}
 
         {% if error %}
             <span class="error text-danger"> {{ error.messageKey }} </span>
         {% endif %}
-
-        {{ form_start(form) }}
-        {{ form_row(form.username) }}
-        {{ form_row(form.email) }}
-        {{ form_row(form.plainPassword.first) }}
-        {{ form_row(form.plainPassword.second) }}
-
-        <button type="submit">{% trans %}Register{% endtrans %}!</button>
-        {{ form_end(form) }}
-
+        <div id="form">
+            {{ form_start(form) }}
+            {{ form_row(form.username) }}
+            {{ form_row(form.email) }}
+            {{ form_row(form.plainPassword.first) }}
+            {{ form_row(form.plainPassword.second) }}
+        </div>
+        <button type="submit" class="btn btn-success">{% trans %}Register{% endtrans %}!</button>
+            {{ form_end(form) }}
+        {#form end musi być po submicie!!! inaczej nie działa button send#}
     </div>
 {% endblock %}

@@ -78,7 +78,7 @@ class AdminController extends AbstractController
 
         $results=$orderRepository->findByExampleField($q);
 
-        return $this->render('admin/results.html.twig', [
+        return $this->render('admin/index.html.twig', [
             'orders' => $results,
             'q' => $q
         ]);

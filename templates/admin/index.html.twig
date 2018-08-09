@@ -8,8 +8,10 @@
         <table id="orders" class="table table striped">
 
             <form method="get" action="{{ path('admin_results') }}">
-                <a>Search by user:</a>
-                <input type="text" name="q">
+                <div class="form-inline">
+                    <label class="sr-only" for="inlineFormInput">Username</label>
+                    <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="search_input" placeholder="Username" name="q">
+                </div>
                 <input type="submit" value="Search" class="btn btn-dark">
             </form>
 
