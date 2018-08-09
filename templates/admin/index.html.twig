@@ -9,10 +9,11 @@
 
             <form method="get" action="{{ path('admin_results') }}">
                 <div class="form-inline">
+                    <p class="mb-2 mr-sm-2">Search by username:</p>
                     <label class="sr-only" for="inlineFormInput">Username</label>
                     <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="search_input" placeholder="Username" name="q">
                 </div>
-                <input type="submit" value="Search" class="btn btn-dark">
+                <input type="submit" value="Search" class="btn btn-dark mb-4">
             </form>
 
             <thead>
