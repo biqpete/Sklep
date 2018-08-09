@@ -8,8 +8,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Order;
-
 class PriceController
 {
     private $price;
@@ -50,13 +48,13 @@ class PriceController
 
         switch($ram){
             case null:
-                break;
+               // break;
             case 8:
                 $price += 200;
-                break;
+               // break;
             case 16:
                 $price += 400;
-                break;
+                //break;
             case 32:
                 $price += 600;
                 break;
