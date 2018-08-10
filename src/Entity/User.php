@@ -212,6 +212,4 @@ class User implements UserInterface, \Serializable, EquatableInterface
 
         return $this;
     }
-
-
 }

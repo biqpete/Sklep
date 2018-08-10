@@ -3,6 +3,9 @@
         .logout {
             padding: 7px;
         }
+        .nav{
+            background-color: red;
+        }
     </style>
     <div class="container">
         <a href="/" class="navbar-brand">Shop</a>
@@ -13,19 +16,24 @@
         <div class="collapse navbar-collapse" id="mobile-nav">
             <ul class="navbar-nav ml-auto">
 
+                {#{% if is_granted('ROLE_ADMIN') %}#}
+                    {#<a href="{{ path('admin/delete_user') }}" class="nav-link">{% trans %}Delete user{% endtrans %}</a>#}
+                {#{% endif %}#}
+
                 {% if is_granted('ROLE_ADMIN') %}
                     <a href="{{ path('admin') }}" class="nav-link">{% trans %}Show all orders{% endtrans %}</a>
                 {% endif %}
+
                 {% if app.user %}
                 <li class="nav-item">
                     <a href="{{ path('new_order') }}" class="nav-link">{% trans %}New order{% endtrans %}</a>
                 </li>
                 {% endif %}
                 <li class="nav-item">
-                    <a href="/" class="nav-link">Home</a>
+                    <a href="/" class="nav-link">{% trans %}Home{% endtrans %}</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ path('about') }}" class="nav-link">About</a>
+                    <a href="{{ path('about') }}" class="nav-link">{% trans %}About{% endtrans %}</a>
                 </li>
                 {% if app.user %}
                 <li class="nav-item">

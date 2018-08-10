@@ -49,7 +49,9 @@ class LocaleController extends AbstractController
     public function changeLocale(Request $request)
     {
         $form = $this->createFormBuilder(null)
-            ->add('locale', LanguageType::class)
+            ->add('locale', LanguageType::class,[
+                'preferred_choices' => ['pl','en']
+    ])
             ->add('save', SubmitType::class)
             ->getForm();
         $form->handleRequest($request);

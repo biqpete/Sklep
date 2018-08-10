@@ -8,7 +8,7 @@
     <p>ram: {{ order.ram }}</p>
     <p>{% trans %}drive{% endtrans %}: {{ order.drive }}</p>
     <p>{% trans %}screen{% endtrans %}: {{ order.screen }}</p>
-    <p>{% trans %}price{% endtrans %}: {{ order.price }}</p>
+    <p class="text text-success">{% trans %}price{% endtrans %}: {{ order.price }}</p>
     <p>{% trans %}order date{% endtrans %}: {{ order.date|date('Y-m-d H:i:s') }}</p>
     <hr>
     <a href="/">{% trans %}Go Back{% endtrans %}</a>

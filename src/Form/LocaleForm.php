@@ -21,7 +21,7 @@ class LocaleForm extends AbstractType
     public function buildForm(FormBuilderInterface $form, array $options)
     {
         $form
-            ->add('locale', LanguageType::class)
+            ->add('locale', LanguageType::class)  // jak tłumaczyć labele formularzy? 
             ->add('save', SubmitType::class);
     }
                                                             // nie działa gdy wywoływany LocaleForm, dlaczego?

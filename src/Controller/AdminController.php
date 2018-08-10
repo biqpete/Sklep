@@ -9,9 +9,11 @@
 namespace App\Controller;
 
 use App\Entity\Order;
+use App\Entity\User;
 use App\Form\AdminOrderTypeEdit;
 use App\Repository\OrderRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -83,5 +85,31 @@ class AdminController extends AbstractController
             'q' => $q
         ]);
     }
+
+//    /**
+//     * @Route("/admin/delete_user/{slug}", name="admin/delete_user")
+//     * @Method({"DELETE"})
+//     */
+//    public function delete(Request $request, $slug)
+//    {
+//        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy([
+//            'username' => $slug
+//        ]);
+//
+////        $orders = $this->getDoctrine()->getRepository(Order::class)->findBy([
+////            'user' => $slug
+////        ]);
+//
+//        $entityManager = $this->getDoctrine()->getManager();
+//        $entityManager->remove($user);
+//        $entityManager->flush();
+////        $entityManager->remove($orders);
+////        $entityManager->flush();
+//
+//        $response = new Response();
+//        $response->send();
+//
+//        return $this->render('admin/index.html.twig');
+//    }
 
 }
