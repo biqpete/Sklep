@@ -25,8 +25,26 @@ class OrderController extends AbstractController
             'user' => $this->getUser()
         ]);
 
+        $locale = $this->getUser()->getLocale();
+
+        $currency = "$";
+        $totalPrice = 0;
+        foreach ($orders as $order)
+        {
+            $totalPrice += $order->getPrice();
+        }
+
+        if($locale == "pl_PL" || $locale == "pl")
+        {
+//            $totalPrice *= 4;
+            $totalPrice = $this->convertCurrency($totalPrice,'USD','PLN');
+            $currency = "PLN";
+        }
+
         return $this->render("orders/index.html.twig", array(
-            'orders' => $orders
+            'orders' => $orders,
+            'totalPrice' => $totalPrice,
+            'currency' => $currency
         ));
     }
 
@@ -84,8 +102,8 @@ class OrderController extends AbstractController
 
         $form->handleRequest($request);
 
-        $time = new \DateTime();
-        $order->setDate($time);
+//        $time = new \DateTime();
+//        $order->setDate($time);
 
         $order->setPrice($priceController->calculate(
             $order->getCpu(),
@@ -136,5 +154,19 @@ class OrderController extends AbstractController
 
         $response = new Response();
         $response->send();
+    }
+
+    function convertCurrency($amount,$from_currency,$to_currency){
+
+        $from_Currency = urlencode($from_currency);
+        $to_Currency = urlencode($to_currency);
+        $query =  "{$from_Currency}_{$to_Currency}";
+
+        $json = file_get_contents("https://free.currencyconverterapi.com/api/v6/convert?q={$query}&compact=y");
+        $obj = json_decode($json, true);
+        $val = floatval($obj["USD_PLN"]["val"]);
+
+        $total = $val * $amount;
+        return number_format($total, 2, '.', '');
     }
 }

@@ -6,6 +6,9 @@
     <hr>
     <h1> {% trans  %} Hello  {% endtrans %} {{ app.user.username }}</h1>
     {% if orders %}
+
+        {#{% set totalPrice=0 %}#}
+
         <table id="orders" class="table table striped">
 
             <form method="get" action="{{ path('admin_results') }}">
@@ -16,7 +19,9 @@
                 </div>
                 <input type="submit" value="Search" class="btn btn-dark mb-4">
             </form>
-
+            {% if error is defined %}
+                <h5 class="text-danger">{{ error }}</h5>
+            {% endif %}
             <thead>
             <tr>
                 {% if is_granted('ROLE_ADMIN') %}
@@ -27,24 +32,47 @@
                 {% if is_granted('ROLE_ADMIN') %}
                     <th>Comment</th>
                 {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <th>Order date</th>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <th>Status</th>
+                {% endif %}
             </tr>
             </thead>
             <tbody>
-            {% for order in orders %}
+            {% for order in orders|sort('desc') %}
                 <tr>
                     <td>{{ order.name }}</td>
                     <td>{{ order.orderName }}</td>
                     <td>
                         <a href="/order/{{ order.id }}" class="btn btn-dark">{% trans %}Show{% endtrans %}</a>
                         <a href="/admin/edit/{{ order.id }}" class="btn btn-light">{% trans %}Edit{% endtrans %}</a>
-                        <a href="#" class="btn btn-danger delete-order" data-id="{{ order.id }}">{% trans %}Delete{% endtrans %}</a>
                         {% if is_granted('ROLE_ADMIN') %}
-                        <a href="#" class="btn btn-danger delete-user" data-id="{{ order.name }}">{% trans %}Delete user{% endtrans %}</a>
+                        <a href="/admin" class="btn btn-danger delete-order" data-id="{{ order.id }}">{% trans %}Delete{% endtrans %}</a>
+                        {% endif %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                        <a href="/admin/delete_user/{{ order.name }}" class="btn btn-danger delete-user" data-id="{{ order.name }}">{% trans %}Delete user{% endtrans %}</a>
                         {% endif %}
                     </td>
                     <td>{{ order.comment }}</td>
+                    <td>{{ order.date| date('Y-m-d H:i:s') }}</td>
+                    <td>{{ order.isSent ? 'Sent' : 'Preparing' }}</td>
                 </tr>
+
+                    {#{% set totalPrice = totalPrice + order.price %}#}
+
             {% endfor %}
+
+            <h4>{% trans %}Total{% endtrans %}:</h4>
+            <h5 class="text-success">{{ totalPrice }} {{ currency }}</h5>
+            {#{% if app.request.getLocale() is same as ('en_EN') or app.request.getLocale() is same as ('en') %}#}
+                {#<h5 class="text-success">{{ totalPrice }} $</h5>#}
+            {#{% endif %}#}
+            {#{% if app.request.getLocale() is same as('pl_PL') or app.request.getLocale() is same as ('pl') %}#}
+                {#{% set totalPrice = totalPrice * 4 %}#}
+                {#<h5 class="text-success">{{ totalPrice }} PLN</h5>#}
+            {#{% endif %}#}
             </tbody>
         </table>
     {% else %}

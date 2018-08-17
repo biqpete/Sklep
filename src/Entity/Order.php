@@ -70,6 +70,11 @@ class Order
     private $comment;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isSent = 0;
+
+    /**
      * @return string
      */
     public function getOrderName()
@@ -194,6 +199,18 @@ class Order
     public function setComment(?string $comment): self
     {
         $this->comment = $comment;
+
+        return $this;
+    }
+
+    public function getIsSent(): ?bool
+    {
+        return $this->isSent;
+    }
+
+    public function setIsSent(bool $isSent): self
+    {
+        $this->isSent = $isSent;
 
         return $this;
     }

@@ -30,8 +30,25 @@ class AdminController extends AbstractController
     {
         $orders = $this->getDoctrine()->getRepository(Order::class)->findAll();
 
+        $locale = $this->getUser()->getLocale();
+
+        $currency = "$";
+        $totalPrice = 0;
+        foreach ($orders as $order)
+        {
+            $totalPrice += $order->getPrice();
+        }
+
+        if($locale == "pl_PL" || $locale == "pl")
+        {
+            $totalPrice *= 4;
+            $currency = "PLN";
+        }
+
         return $this->render("admin/index.html.twig", array(
-            'orders' => $orders
+            'orders' => $orders,
+            'totalPrice' => $totalPrice,
+            'currency' => $currency
         ));
     }
 
@@ -47,8 +64,8 @@ class AdminController extends AbstractController
 
         $form->handleRequest($request);
 
-        $time = new \DateTime();
-        $order->setDate($time);
+//        $time = new \DateTime();
+//        $order->setDate($time);
 
         $order->setPrice($priceController->calculate(
             $order->getCpu(),
@@ -80,36 +97,80 @@ class AdminController extends AbstractController
 
         $results=$orderRepository->findByExampleField($q);
 
+        $locale = $this->getUser()->getLocale();
+
+        $currency = "$";
+        $totalPrice = 0;
+        foreach ($results as $result)
+        {
+            $totalPrice += $result->getPrice();
+        }
+
+        if($locale == "pl_PL" || $locale == "pl")
+        {
+            $totalPrice *= 4;
+            $currency = "PLN";
+        }
+
+//        if(!empty($results))
+//        {
+//            foreach ($results as $result)
+//            {
+//                $totalPrice = 0;
+//                $totalPrice += $result->getPrice();
+//            }
+//        }
+
         return $this->render('admin/index.html.twig', [
             'orders' => $results,
-            'q' => $q
+            'q' => $q,
+            'totalPrice' => $totalPrice,
+            'currency' => $currency
         ]);
     }
 
-//    /**
-//     * @Route("/admin/delete_user/{slug}", name="admin/delete_user")
-//     * @Method({"DELETE"})
-//     */
-//    public function delete(Request $request, $slug)
-//    {
-//        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy([
-//            'username' => $slug
-//        ]);
-//
-////        $orders = $this->getDoctrine()->getRepository(Order::class)->findBy([
-////            'user' => $slug
-////        ]);
-//
-//        $entityManager = $this->getDoctrine()->getManager();
-//        $entityManager->remove($user);
-//        $entityManager->flush();
-////        $entityManager->remove($orders);
-////        $entityManager->flush();
-//
-//        $response = new Response();
-//        $response->send();
-//
-//        return $this->render('admin/index.html.twig');
-//    }
+    /**
+     * @Route("/admin/delete_user/{slug}", name="admin/delete_user")
+     * @Method({"DELETE"})
+     */
+    public function delete(Request $request, $slug)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository(User::class)->findOneBy([
+            'username' => $slug
+        ]);
 
+        if(!empty($user)){
+            $orders = $em->getRepository(Order::class)->findBy([
+            'name' => $slug
+        ]);
+            foreach ($orders as $order) {
+                $em->remove($order);
+                $em->flush();
+            }
+
+            $em->remove($user);
+            $em->flush();
+
+            $response = new Response();
+            $response->send();
+
+            $orders = $this->getDoctrine()->getRepository(Order::class)->findAll();
+//            return $this->render('admin/index.html.twig',[
+//                'orders' => $orders,
+//            ]);
+            return $this->redirectToRoute('admin');
+        } else if (empty($user)){
+            $response = new Response();
+            $response->send();
+
+            $error = "Unknown user.";
+
+            $orders = $this->getDoctrine()->getRepository(Order::class)->findAll();
+            return $this->render('admin/index.html.twig',[
+                'orders' => $orders,
+                'error' => $error
+            ]);
+        }
+    }
 }

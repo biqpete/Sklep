@@ -10,6 +10,7 @@ namespace App\Form;
 
 use App\Entity\Order;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -80,9 +81,15 @@ class AdminOrderTypeEdit extends AbstractType
                 //'data' => $order->getPrice(),
                 'disabled' => 'true'
             ))
-            ->add('comment', TextareaType::class, array(
+            ->add('comment', TextareaType::class, [
+                'required' => false,
                 'attr' => array('class' => 'form-control'),
-            ))
+            ])
+            ->add('isSent', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Sent',
+                'attr' => ['class' => 'form-control']
+            ])
             ->add('save', SubmitType::class, array(
                 'label' => 'Create',
                 'attr' => array('class' => 'btn btn-primary mt-3')
