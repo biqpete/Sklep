@@ -28,7 +28,7 @@
             <span class="error text-danger"> {{ error.messageKey }} </span>
         {% endif %}
         <div id="form">
-            {{ form_start(form) }}
+            {{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
             {{ form_row(form.username) }}
             {{ form_row(form.email) }}
             {{ form_row(form.plainPassword.first) }}

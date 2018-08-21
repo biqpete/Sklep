@@ -100,6 +100,7 @@ class AdminOrderTypeEdit extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => Order::class,
+            'allow_extra_fields' => true
         ));
     }
 }

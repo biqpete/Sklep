@@ -3,6 +3,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -54,6 +55,7 @@ class Order
     private $date;
 
     /**
+     * @Assert\NotBlank()
      * @ORM\Column(type="string", nullable=true)
      */
     private $orderName;

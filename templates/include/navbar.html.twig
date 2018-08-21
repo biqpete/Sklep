@@ -25,21 +25,30 @@
                 {% endif %}
 
                 {% if app.user %}
-                <li class="nav-item">
-                    <a href="{{ path('new_order') }}" class="nav-link">{% trans %}New order{% endtrans %}</a>
-                </li>
+                    <li class="nav-item">
+                        <a href="{{ path('new_order') }}" class="nav-link">{% trans %}New order{% endtrans %}</a>
+                    </li>
                 {% endif %}
+
                 <li class="nav-item">
                     <a href="/" class="nav-link">{% trans %}Home{% endtrans %}</a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ path('about') }}" class="nav-link">{% trans %}About{% endtrans %}</a>
                 </li>
+
+                {% if app.user %}
+                    <li class="nav-item">
+                        <a href="{{ path('changeLocale') }}" class="nav-link">{% trans %}Change language{% endtrans %}</a>
+                    </li>
+                {% endif %}
+
                 {% if app.user %}
                 <li class="nav-item">
-                    <a href="{{ path('changeLocale') }}" class="nav-link">{% trans %}Change language{% endtrans %}</a>
+                    <a href="{{ path('editProfile') }}" class="nav-link">{% trans %}Edit profile{% endtrans %}</a>
                 </li>
                 {% endif %}
+
                 {% if app.user %}
                 <li class="nav-item logout">
                     <a href="{{ path('logout') }}">{% trans %}Logout{% endtrans %}</a>

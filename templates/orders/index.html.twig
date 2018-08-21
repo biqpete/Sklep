@@ -22,14 +22,18 @@
                         <td>
                             <a href="/order/{{ order.id }}" class="btn btn-dark">{% trans %}Show{% endtrans %}</a>
                             <a href="/order/edit/{{ order.id }}" class="btn btn-light">{% trans %}Edit{% endtrans %}</a>
-                            <a href="/" class="btn btn-danger delete-order" data-id="{{ order.id }}">{% trans %}Delete{% endtrans %}</a>
+                            <a href="#" class="btn btn-danger delete-order" data-id="{{ order.id }}">{% trans %}Delete{% endtrans %}</a>
                         </td>
                     </tr>
                         {#{% set totalPrice = totalPrice + order.price %}#}
                 {% endfor %}
 
                 <h4>{% trans %}Total{% endtrans %}:</h4>
-                <h5 class="text-success">{{ totalPrice }} {{ currency }}</h5>
+                {% if totalPrice is defined %}
+                {% if currency is defined %}
+                    <h5 class="text-success">{{ totalPrice }} {{ currency }}</h5>
+                {% endif %}
+                {% endif %}
                 {#{% if app.request.getLocale() is same as ('en_EN') or app.request.getLocale() is same as ('en') %}#}
                 {#<h5 class="text-success">{{ totalPrice }} $</h5>#}
                 {#{% endif %}#}
@@ -46,5 +50,5 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script src="/js/main.js"></script>
+    <script src="js/main.js"></script>
 {% endblock %}

@@ -148,10 +148,21 @@ desired effect
             <!-- Main content -->
             <section class="content container-fluid">
 
+                <h1>{% trans %}Order name{% endtrans %}: {{ order.orderName }}</h1>
+                <p>cpu: {{ order.cpu }}</p>
+                <p>ram: {{ order.ram }}</p>
+                <p>{% trans %}drive{% endtrans %}: {{ order.drive }}</p>
+                <p>{% trans %}screen{% endtrans %}: {{ order.screen }}</p>
+                {% if app.request.getLocale() is same as('pl_PL') or app.request.getLocale() is same as ('pl') %}
+                    {% set orderPricePL =  order.price * 4 %}
+                    <p class="text text-success">{% trans %}price{% endtrans %}: {{ orderPricePL }} PLN</p>
+                {% endif %}
+                {% if app.request.getLocale() is same as('en_EN') or app.request.getLocale() is same as ('en') %}
+                    <p class="text text-success">{% trans %}price{% endtrans %}: {{ order.price }} $</p>
+                {% endif %}
+                <p>{% trans %}order date{% endtrans %}: {{ order.date|date('Y-m-d H:i:s') }}</p>
                 <hr>
-                {{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
-                {{ form_widget(form) }}
-                {{ form_end(form) }}
+                <a href="/admin">{% trans %}Go Back{% endtrans %}</a>
 
             </section>
             <!-- /.content -->

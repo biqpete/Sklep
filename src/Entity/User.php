@@ -6,58 +6,120 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Form\FormTypeInterface;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Bridge\Doctrine\Validator\Constraints;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
-class User implements UserInterface, \Serializable, EquatableInterface
+class User implements AdvancedUserInterface, \Serializable, EquatableInterface
 {
+    public function isAccountNonExpired()
+    {
+//        if($this->getIsActive() == true){
+//            return true;
+//        } else {
+//            return false;
+//        }
+        return true;
+    }
+
+    public function isAccountNonLocked()
+    {
+//        if($this->getIsActive() == true){
+//            return true;
+//        } else {
+//            return false;
+//        }
+        return true;
+    }
+
+    public function isCredentialsNonExpired()
+    {
+//        if($this->getIsActive() == true){
+//            return true;
+//        } else {
+//            return false;
+//        }
+        return true;
+    }
+
+    public function isEnabled()
+    {
+        if($this->getIsActive() == true){
+            return true;
+        } else {
+        return false;
+        }
+    }
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\NotBlank()
      */
-    private $username;
+    protected $username;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $password;
+    protected $password;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\NotBlank()
      */
-    private $email;
+    protected $email;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $locale;
+    protected $locale;
 
     /**
      * @Assert\NotBlank()
      * @Assert\Length(max=4096)
      */
-    private $plainPassword;
+    protected $plainPassword;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="user")
      */
-    private $orders;
+    protected $orders;
 
     /**
      * @ORM\Column(type="array")
      */
-    private $roles;
+    protected $roles;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $hash;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $firstName;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $secondName;
 
     public function __construct()
     {
@@ -74,6 +136,10 @@ class User implements UserInterface, \Serializable, EquatableInterface
         return $this->username;
     }
 
+    /**
+     * @param string $username
+     * @return User
+     */
     public function setUsername(string $username): self
     {
         $this->username = $username;
@@ -138,7 +204,8 @@ class User implements UserInterface, \Serializable, EquatableInterface
             $this->username,
             $this->email,
             $this->password,
-            $this->locale
+            $this->locale,
+            $this->isActive  // dopisane
         ]);
     }
 
@@ -149,7 +216,8 @@ class User implements UserInterface, \Serializable, EquatableInterface
             $this->username,
             $this->email,
             $this->password,
-            $this->locale
+            $this->locale,
+            $this->isActive // dopisane
             ) = unserialize($string, ['allowed_classes' => false]);
     }
 
@@ -209,6 +277,54 @@ class User implements UserInterface, \Serializable, EquatableInterface
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function getHash(): ?string
+    {
+        return $this->hash;
+    }
+
+    public function setHash(?string $hash): self
+    {
+        $this->hash = $hash;
+
+        return $this;
+    }
+
+    public function getIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(?bool $isActive): self
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(?string $firstName): self
+    {
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    public function getSecondName(): ?string
+    {
+        return $this->secondName;
+    }
+
+    public function setSecondName(?string $secondName): self
+    {
+        $this->secondName = $secondName;
 
         return $this;
     }

@@ -7,6 +7,7 @@ use App\Form\OrderTypeEdit;
 use App\Form\OrderTypeNew;
 use App\Entity\User;
 use App\Entity\Order;
+use App\Form\UserDataEditType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,8 +22,10 @@ class OrderController extends AbstractController
      */
     public function index(Request $request)
     {
+        $user = $this->getDoctrine()->getRepository(User::class)->find($this->getUser());
+
         $orders = $this->getDoctrine()->getRepository(Order::class)->findBy([
-            'user' => $this->getUser()
+            'user' => $user
         ]);
 
         $locale = $this->getUser()->getLocale();
@@ -42,6 +45,7 @@ class OrderController extends AbstractController
         }
 
         return $this->render("orders/index.html.twig", array(
+            'user' => $user,
             'orders' => $orders,
             'totalPrice' => $totalPrice,
             'currency' => $currency
@@ -52,7 +56,7 @@ class OrderController extends AbstractController
      * @Route("/order/new", name="new_order")
      * @Method({"GET","POST"})
      */
-    public function new(Request $request)
+    public function new(Request $request, \Swift_Mailer $mailer)
     {
         $user = $this->getDoctrine()->getRepository(User::class)->find($this->getUser());
         $order = new Order();
@@ -80,6 +84,23 @@ class OrderController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($order);
             $entityManager->flush();
+
+            $message = (new \Swift_Message('Order accepted '.ucfirst($user->getUsername()).'!'))
+                ->setFrom('petermailer777@gmail.com')
+                ->setTo($user->getEmail())
+//                ->setTo("ochenx@gmail.com")
+                ->setBody(
+                    'Hello '.ucfirst($user->getUsername()).'! '.
+                    'Your order has been accepted, you will be notified when the order will be sent.
+                Your order:
+                     cpu: '.$order->getCpu().
+                    ' ram: '.$order->getRam().
+                    ' drive: '.$order->getDrive().
+                    ' screen:'.$order->getScreen().
+                    ' price:'.$order->getPrice()
+                )
+            ;
+            $mailer->send($message);
 
             return $this->redirectToRoute('order_list');
         }
@@ -128,15 +149,27 @@ class OrderController extends AbstractController
 
     /**
      * @Route("/order/{id}",name="order_show")
-     * @
      */
     public function show($id)
     {
         $order = $this->getDoctrine()->getRepository(Order::class)->find($id);
 
+        $locale = $this->getUser()->getLocale();
+
+        $currency = "$";
+        $orderPrice = $order->getPrice();
+
+        if($locale == "pl_PL" || $locale == "pl")
+        {
+            $orderPrice = $this->convertCurrency($orderPrice,'USD','PLN');
+            $currency = "PLN";
+        }
+
         return $this->render('orders/show.html.twig', array
         (
-            'order' => $order
+            'order' => $order,
+            'orderPrice' => $orderPrice,
+            'currency' => $currency
         ));
     }
 
@@ -168,5 +201,35 @@ class OrderController extends AbstractController
 
         $total = $val * $amount;
         return number_format($total, 2, '.', '');
+    }
+
+    /**
+     * @Route("/about", name="about")
+     */
+    public function about(){
+        return $this->render('about.html.twig');
+    }
+
+    /**
+     * @Route("/editProfile", name="editProfile")
+     */
+    public function editProfile(Request $request)
+    {
+        $user = $this->getDoctrine()->getRepository(User::class)->find($this->getUser());
+        $user->setPlainPassword(0);  // JAKI INNY SPOSÓB NA BŁĄD : PLAINPASSWORD CANT BE NULL ?
+
+        $form = $this->createForm(UserDataEditType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+            return $this->redirectToRoute('order_list');
+        }
+
+        return $this->render('orders/userEdit.html.twig',[
+            'form' => $form->createView()
+        ]);
     }
 }
