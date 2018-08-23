@@ -9,6 +9,7 @@
     "almasaeed2010/adminlte": "~2.4",
     "knplabs/knp-paginator-bundle": "^2.8",
     "lexik/jwt-authentication-bundle": "^2.5",
+    "liip/imagine-bundle": "^2.1",
     "monolog/monolog": "^1.23",
     "sensio/framework-extra-bundle": "^5.2",
     "sensiolabs/security-checker": "^4.1",

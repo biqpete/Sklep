@@ -8,41 +8,76 @@ use App\Form\OrderTypeNew;
 use App\Entity\User;
 use App\Entity\Order;
 use App\Form\UserDataEditType;
+use App\Repository\OrderRepository;
+use Doctrine\DBAL\Exception\NotNullConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
-class OrderController extends AbstractController
+class OrderController extends Controller
 {
     /**
      * @Route("/", name="order_list")
      * @Method({"GET"})
      */
-    public function index(Request $request)
+    public function index(Request $request, OrderRepository $orderRepository)
     {
         $user = $this->getDoctrine()->getRepository(User::class)->find($this->getUser());
 
-        $orders = $this->getDoctrine()->getRepository(Order::class)->findBy([
-            'user' => $user
-        ]);
-
+        if(!empty($user))
+        {
+            $orders = $this->getDoctrine()->getRepository(Order::class)->findBy([
+                'user' => $user
+            ]);
+        } else {
+            $orders = null;
+        }
         $locale = $this->getUser()->getLocale();
 
         $currency = "$";
         $totalPrice = 0;
-        foreach ($orders as $order)
-        {
+        foreach ($orders as $order) {
             $totalPrice += $order->getPrice();
+            if ($locale == "pl_PL" || $locale == "pl") {
+                //$order->setPrice($this->convertCurrency($order->getPrice(), 'USD', 'PLN')); // ZA DUŻO REQUESTÓW FREE
+                $order->setPrice($order->getPrice() * 3.8);
+            }
         }
 
-        if($locale == "pl_PL" || $locale == "pl")
-        {
-//            $totalPrice *= 4;
-            $totalPrice = $this->convertCurrency($totalPrice,'USD','PLN');
+        if ($locale == "pl_PL" || $locale == "pl") {
+            $totalPrice *= 3.8;
+            //$totalPrice = $this->convertCurrency($totalPrice, 'USD', 'PLN');
             $currency = "PLN";
         }
+
+        // tutaj zaczyna się polska szpachla Janusza
+        $_user = $this->getDoctrine()->getRepository(User::class)->find($this->getUser());
+
+//        try {
+//            $userId = $_user->getUser()->getId();
+//        } catch (NotNullConstraintViolationException $e){
+//            $e->getMessage();
+//        }
+
+            $userId = $_user->getId();
+
+        $qb = $orderRepository->createQueryBuilder('o')
+            ->setParameter('q', '' . $userId . '')
+            ->andWhere('o.user = :q');
+
+        $query = $qb->getQuery(); //    ->getResult();
+
+        $paginator = $this->get('knp_paginator');
+        $orders = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1)/*page number*/,
+            10/*limit per page*/
+        );
 
         return $this->render("orders/index.html.twig", array(
             'user' => $user,
@@ -85,21 +120,20 @@ class OrderController extends AbstractController
             $entityManager->persist($order);
             $entityManager->flush();
 
-            $message = (new \Swift_Message('Order accepted '.ucfirst($user->getUsername()).'!'))
+            $message = (new \Swift_Message('Order accepted ' . ucfirst($user->getUsername()) . '!'))
                 ->setFrom('petermailer777@gmail.com')
                 ->setTo($user->getEmail())
 //                ->setTo("ochenx@gmail.com")
                 ->setBody(
-                    'Hello '.ucfirst($user->getUsername()).'! '.
+                    'Hello ' . ucfirst($user->getUsername()) . '! ' .
                     'Your order has been accepted, you will be notified when the order will be sent.
                 Your order:
-                     cpu: '.$order->getCpu().
-                    ' ram: '.$order->getRam().
-                    ' drive: '.$order->getDrive().
-                    ' screen:'.$order->getScreen().
-                    ' price:'.$order->getPrice()
-                )
-            ;
+                     cpu: ' . $order->getCpu() .
+                    ' ram: ' . $order->getRam() .
+                    ' drive: ' . $order->getDrive() .
+                    ' screen:' . $order->getScreen() .
+                    ' price:' . $order->getPrice()
+                );
             $mailer->send($message);
 
             return $this->redirectToRoute('order_list');
@@ -159,9 +193,8 @@ class OrderController extends AbstractController
         $currency = "$";
         $orderPrice = $order->getPrice();
 
-        if($locale == "pl_PL" || $locale == "pl")
-        {
-            $orderPrice = $this->convertCurrency($orderPrice,'USD','PLN');
+        if ($locale == "pl_PL" || $locale == "pl") {
+            $orderPrice = $this->convertCurrency($orderPrice, 'USD', 'PLN');
             $currency = "PLN";
         }
 
@@ -189,11 +222,12 @@ class OrderController extends AbstractController
         $response->send();
     }
 
-    function convertCurrency($amount,$from_currency,$to_currency){
+    public function convertCurrency($amount, $from_currency, $to_currency)
+    {
 
         $from_Currency = urlencode($from_currency);
         $to_Currency = urlencode($to_currency);
-        $query =  "{$from_Currency}_{$to_Currency}";
+        $query = "{$from_Currency}_{$to_Currency}";
 
         $json = file_get_contents("https://free.currencyconverterapi.com/api/v6/convert?q={$query}&compact=y");
         $obj = json_decode($json, true);
@@ -206,7 +240,8 @@ class OrderController extends AbstractController
     /**
      * @Route("/about", name="about")
      */
-    public function about(){
+    public function about()
+    {
         return $this->render('about.html.twig');
     }
 
@@ -218,18 +253,41 @@ class OrderController extends AbstractController
         $user = $this->getDoctrine()->getRepository(User::class)->find($this->getUser());
         $user->setPlainPassword(0);  // JAKI INNY SPOSÓB NA BŁĄD : PLAINPASSWORD CANT BE NULL ?
 
-        $form = $this->createForm(UserDataEditType::class, $user);
-        $form->handleRequest($request);
+        $form1 = $this->createForm(UserDataEditType::class, $user);
+        $form1->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form1->isSubmitted() && $form1->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
             return $this->redirectToRoute('order_list');
         }
 
-        return $this->render('orders/userEdit.html.twig',[
-            'form' => $form->createView()
+        return $this->render('orders/userEdit.html.twig', [
+            'form' => $form1->createView()
         ]);
     }
+
+//    /**
+//     * @Route("/editProfile", name="editPhoto")
+//     */
+//    public function editPhoto(Request $request)
+//    {
+//        $user = $this->getDoctrine()->getRepository(User::class)->find($this->getUser());
+//        $user->setPlainPassword(0);  // JAKI INNY SPOSÓB NA BŁĄD : PLAINPASSWORD CANT BE NULL ?
+//
+//        $form2 = $this->createForm(VichImageType::class, $user);
+//        $form2->handleRequest($request);
+//
+//        if ($form2->isSubmitted() && $form2->isValid()) {
+//            $entityManager = $this->getDoctrine()->getManager();
+//            $entityManager->persist($user);
+//            $entityManager->flush();
+//            return $this->redirectToRoute('order_list');
+//        }
+//
+//        return $this->render('orders/userEdit.html.twig',[
+//            'form2' => $form->createView()
+//        ]);
+//    }
 }

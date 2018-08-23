@@ -61,7 +61,7 @@ desired effect
         <header class="main-header">
 
             <!-- Logo -->
-            <a href="{{ asset('index2.html') }}" class="logo">
+            <a href="{{ asset('index.html') }}" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini"><b>A</b>LT</span>
                 <!-- logo for regular state and mobile devices -->
@@ -153,10 +153,9 @@ desired effect
                 <h1> {% trans  %} Hello  {% endtrans %} {{ app.user.username }}</h1>
                 {% if orders %}
 
-                    {% set totalPrice=0 %}
+                    {#{% set totalPrice=0 %}#}
 
                     <table id="orders" class="table table striped">
-
                         <form method="get" action="{{ path('admin_results') }}">
                             <div class="form-inline">
                                 <p class="mb-2 mr-sm-2">Search by username:</p>
@@ -170,31 +169,24 @@ desired effect
                         {% endif %}
                         <thead>
                         <tr>
-                            {% if is_granted('ROLE_ADMIN') %}
-                                <th>User</th>
-                            {% endif %}
-                            <th>{{ knp_pagination_sortable(orders, 'id', 'order.id') }}</th>
-                            <th>{% trans %}Order{% endtrans %}</th>
-                            {% if is_granted('ROLE_ADMIN') %}
-                                <th>{% trans %}Comment{% endtrans %}</th>
-                            {% endif %}
-                            {% if is_granted('ROLE_ADMIN') %}
-                                <th>Order date</th>
-                            {% endif %}
-                            {% if is_granted('ROLE_ADMIN') %}
-                                <th>Status</th>
-                            {% endif %}
+                            <th>{{ knp_pagination_sortable(orders, 'User', 'o.name') }}</th>
+                            <th>{{ knp_pagination_sortable(orders, 'Order', 'o.orderName') }}</th>
+                            <th>{{ knp_pagination_sortable(orders, 'Comment', 'o.comment') }}</th>
+                            <th>{{ knp_pagination_sortable(orders, 'Date', 'o.date') }}</th>
+                            <th>{{ knp_pagination_sortable(orders, 'Status', 'o.isSent') }}</th>
+                            <th>{{ knp_pagination_sortable(orders, 'Price', 'o.price') }}</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% for order in orders|sort('desc') %}
+                        {% for order in orders %}
                             <tr>
                                 <td>{{ order.name }}</td>
                                 <td>{{ order.orderName }}</td>
                                 <td>{{ order.comment }}</td>
                                 <td>{{ order.date| date('Y-m-d H:i:s') }}</td>
                                 <td>{{ order.isSent ? 'Sent' : 'Preparing' }}</td>
+                                <td>{{ order.price }} {{ currency }}</td>
                                 <td>
                                     <a href="/admin/show/{{ order.id }}" class="btn btn-dark">{% trans %}Show{% endtrans %}</a>
                                     <a href="/admin/edit/{{ order.id }}" class="btn btn-light">{% trans %}Edit{% endtrans %}</a>
@@ -206,9 +198,7 @@ desired effect
                                     {% endif %}
                                 </td>
                             </tr>
-
-                            {% set totalPrice = totalPrice + order.price %}
-
+                            {#{% set totalPrice = totalPrice + order.price %}#}
                         {% endfor %}
 
                         <h4>{% trans %}Total{% endtrans %}:</h4>
@@ -217,12 +207,13 @@ desired effect
                                 <h5 class="text-success">{{ totalPrice }} {{ currency }}</h5>
                             {% endif %}
                         {% endif %}
-                        {% if app.request.getLocale() is same as ('en_EN') or app.request.getLocale() is same as ('en') %}
-                        {% endif %}
-                        {% if app.request.getLocale() is same as('pl_PL') or app.request.getLocale() is same as ('pl') %}
-                            {% set totalPrice = totalPrice * 4 %}
-                            <h5 class="text-success">{{ totalPrice }} PLN</h5>
-                        {% endif %}
+                        {#{% if app.request.getLocale() is same as ('en_EN') or app.request.getLocale() is same as ('en') %}#}
+                        {#{% endif %}#}
+                        {#{% if app.request.getLocale() is same as('pl_PL') or app.request.getLocale() is same as ('pl') %}#}
+                            {#{% set totalPrice = totalPrice * 4 %}#}
+                            {#<h5 class="text-success">{{ totalPrice }} PLN</h5>#}
+                        {#{% endif %}#}
+                        {{ knp_pagination_render(orders) }}
                         </tbody>
                     </table>
                 {% else %}

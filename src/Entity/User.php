@@ -5,57 +5,16 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
 class User implements AdvancedUserInterface, \Serializable, EquatableInterface
 {
-    public function isAccountNonExpired()
-    {
-//        if($this->getIsActive() == true){
-//            return true;
-//        } else {
-//            return false;
-//        }
-        return true;
-    }
-
-    public function isAccountNonLocked()
-    {
-//        if($this->getIsActive() == true){
-//            return true;
-//        } else {
-//            return false;
-//        }
-        return true;
-    }
-
-    public function isCredentialsNonExpired()
-    {
-//        if($this->getIsActive() == true){
-//            return true;
-//        } else {
-//            return false;
-//        }
-        return true;
-    }
-
-    public function isEnabled()
-    {
-        if($this->getIsActive() == true){
-            return true;
-        } else {
-        return false;
-        }
-    }
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -327,5 +286,44 @@ class User implements AdvancedUserInterface, \Serializable, EquatableInterface
         $this->secondName = $secondName;
 
         return $this;
+    }
+
+    public function isAccountNonExpired()
+    {
+//        if($this->getIsActive() == true){
+//            return true;
+//        } else {
+//            return false;
+//        }
+        return true;
+    }
+
+    public function isAccountNonLocked()
+    {
+//        if($this->getIsActive() == true){
+//            return true;
+//        } else {
+//            return false;
+//        }
+        return true;
+    }
+
+    public function isCredentialsNonExpired()
+    {
+//        if($this->getIsActive() == true){
+//            return true;
+//        } else {
+//            return false;
+//        }
+        return true;
+    }
+
+    public function isEnabled()
+    {
+        if($this->getIsActive() == true){
+            return true;
+        } else {
+            return false;
+        }
     }
 }

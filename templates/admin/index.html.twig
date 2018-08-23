@@ -153,7 +153,7 @@ desired effect
                 <h1> {% trans  %} Hello  {% endtrans %} {{ app.user.username }}</h1>
                 {% if orders %}
 
-                    {% set totalPrice=0 %}
+                    {#{% set totalPrice=0 %}#}
 
                     <table id="orders" class="table table striped">
 
@@ -206,7 +206,7 @@ desired effect
                                 </td>
                             </tr>
 
-                            {% set totalPrice = totalPrice + order.price %}
+                            {#{% set totalPrice = totalPrice + order.price %}#}
 
                         {% endfor %}
 
@@ -215,12 +215,6 @@ desired effect
                             {% if currency is defined %}
                                 <h5 class="text-success">{{ totalPrice }} {{ currency }}</h5>
                             {% endif %}
-                        {% endif %}
-                        {% if app.request.getLocale() is same as ('en_EN') or app.request.getLocale() is same as ('en') %}
-                        {% endif %}
-                        {% if app.request.getLocale() is same as('pl_PL') or app.request.getLocale() is same as ('pl') %}
-                        {% set totalPrice = totalPrice * 4 %}
-                        <h5 class="text-success">{{ totalPrice }} PLN</h5>
                         {% endif %}
                         </tbody>
                     </table>

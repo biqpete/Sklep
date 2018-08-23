@@ -27,8 +27,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 
-
-class AdminController extends AbstractController //Controller implements PaginatorAwareInterface
+class AdminController extends Controller implements PaginatorAwareInterface
 {
 //    /**
 //     * @Route("/adminlogin", name="adminlogin")
@@ -48,7 +47,7 @@ class AdminController extends AbstractController //Controller implements Paginat
      * @Route("/admin", name="admin")
      * @IsGranted("ROLE_ADMIN")
      */
-    public function index(Request $request, OrderRepository $orderRepository) : Response//, PaginatorInterface $paginator)
+    public function index(Request $request, OrderRepository $orderRepository): Response//, PaginatorInterface $paginator)
     {
         $user = $this->getDoctrine()->getRepository(User::class)->findAll();
         $orders = $this->getDoctrine()->getRepository(Order::class)->findAll();
@@ -59,55 +58,36 @@ class AdminController extends AbstractController //Controller implements Paginat
         $totalPrice = 0;
         foreach ($orders as $order) {
             $totalPrice += $order->getPrice();
+            if ($locale == "pl_PL" || $locale == "pl") {
+//                $order->setPrice($this->convertCurrency($order->getPrice(), 'USD', 'PLN')); // ZA DUŻO REQUESTÓW NA FREE
+                $order->setPrice(($order->getPrice()) * (3.8));
+            }
         }
 
         if ($locale == "pl_PL" || $locale == "pl") {
-            $totalPrice *= 4;
+//            $totalPrice = $this->convertCurrency($totalPrice, 'USD', 'PLN');
+            $totalPrice *= 3.8;
             $currency = "PLN";
         }
 
-        return $this->render("admin/index.html.twig", array(
+//        $em = $this->getDoctrine()->getManager();
+
+        $query = $orderRepository->createQueryBuilder('o');
+        $query = $query->getQuery(); // ->getResult()
+
+        $paginator = $this->get('knp_paginator');
+        $orders = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1)/*page number*/,
+            10/*limit per page*/
+        );
+
+        return $this->render("admin/indexPAGINATOR.html.twig", array(
             'user' => $user,
             'orders' => $orders,
             'totalPrice' => $totalPrice,
             'currency' => $currency
         ));
-
-//        $em = $this->getDoctrine()->getManager();
-//        $q = new QueryBuilder($em);
-//        $qb = $request->query->get('q', '');
-//        $query = $orderRepository->createQueryBuilder('b');
-//        if (!empty($q)) {
-//            $query->where('b.title LIKE :q')
-//                ->setParameter('q', '%'.$q.'%');
-//        }
-//        $query = $query->getQuery();
-//
-//        $paginator  = $this->get('knp_paginator');
-//        $pagination = $paginator->paginate(
-//            $query, /* query NOT result */
-//            $request->query->getInt('page', 1)/*page number*/,
-//            10/*limit per page*/
-//        );
-//
-//        return $this->render('index.html.twig', [
-//            'books' => $pagination,
-//            'q' => $q
-//        ]);
-
-//        $paginator = $this->get('knp_paginator');
-//        $orders = $paginator->paginate(
-//            $query = $this->getDoctrine()->getRepository(Order::class)->findAll(),
-//            $request->query->getInt('page', 1), /*page number*/
-//            10 /*limit per page*/
-//        );
-//
-//        return $this->render("admin/indexPAGINATOR.html.twig", array(
-//            'user' => $user,
-//            'orders' => $orders,
-//            'totalPrice' => $totalPrice,
-//            'currency' => $currency
-//        ));
     }
 
     /**
@@ -141,16 +121,13 @@ class AdminController extends AbstractController //Controller implements Paginat
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
 
-            if($order->getIsSent() != $orderStatusOrigial)
-            {
-                if($order->getIsSent() == true)
-                {
-                    $message = (new \Swift_Message('Hello '.ucfirst($username).'!'))
+            if ($order->getIsSent() != $orderStatusOrigial) {
+                if ($order->getIsSent() == true) {
+                    $message = (new \Swift_Message('Hello ' . ucfirst($username) . '!'))
                         ->setFrom('petermailer777@gmail.com')
                         ->setTo($user->getEmail())
-                        ->setBody("Hello ".ucfirst($username).'! '.
-                            "Your order from Peter's Shop has been sent!")
-                    ;
+                        ->setBody("Hello " . ucfirst($username) . '! ' .
+                            "Your order from Peter's Shop has been sent!");
                     $mailer->send($message);
                 }
             }
@@ -172,28 +149,21 @@ class AdminController extends AbstractController //Controller implements Paginat
 
         $results = $orderRepository->findByExampleField($q);
 
-        $locale = $this->getUser()->getLocale();
 
         $currency = "$";
         $totalPrice = 0;
-        foreach ($results as $result) {
-            $totalPrice += $result->getPrice();
-        }
+        $locale = $this->getUser()->getLocale();
 
         if ($locale == "pl_PL" || $locale == "pl") {
-            $totalPrice *= 4;
+            $totalPrice = $this->convertCurrency($totalPrice, 'USD', 'PLN');
             $currency = "PLN";
         }
 
-//        if(!empty($results))
-//        {
-//            foreach ($results as $result)
-//            {
-//                $totalPrice = 0;
-//                $totalPrice += $result->getPrice();
-//            }
-//        }
-
+        if (!empty($results)) {
+            foreach ($results as $result) {
+                $totalPrice += $result->getPrice();
+            }
+        }
         return $this->render('admin/index.html.twig', [
             'orders' => $results,
             'q' => $q,
@@ -264,5 +234,20 @@ class AdminController extends AbstractController //Controller implements Paginat
     public function setPaginator(Paginator $paginator)
     {
         // TODO: Implement setPaginator() method.
+    }
+
+    public function convertCurrency($amount, $from_currency, $to_currency)
+    {
+
+        $from_Currency = urlencode($from_currency);
+        $to_Currency = urlencode($to_currency);
+        $query = "{$from_Currency}_{$to_Currency}";
+
+        $json = file_get_contents("https://free.currencyconverterapi.com/api/v6/convert?q={$query}&compact=y");
+        $obj = json_decode($json, true);
+        $val = floatval($obj["USD_PLN"]["val"]);
+
+        $total = $val * $amount;
+        return number_format($total, 2, '.', '');
     }
 }
