@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\User;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class UserDataEditType extends AbstractType
 {
@@ -33,6 +34,12 @@ class UserDataEditType extends AbstractType
                 ],
                 'required' => false
             ])
+            ->add('imageFile', VichFileType::class, array(
+                'label' => 'Image',
+                'required' => false,
+                'allow_delete' => true,
+                'download_label' => true
+            ))
             ->add('submit', SubmitType::class, array(
                 'label' => 'Save',
                 'attr' => array('class' => 'btn btn-primary mt-3')

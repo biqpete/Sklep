@@ -21,7 +21,7 @@
                 {#{% endif %}#}
 
                 {% if is_granted('ROLE_ADMIN') %}
-                    <a href="{{ path('admin') }}" class="nav-link">{% trans %}Show all orders{% endtrans %}</a>
+                    <a href="{{ asset('admin/all-orders') }}" class="nav-link">{% trans %}Show all orders{% endtrans %}</a>
                 {% endif %}
 
                 {% if app.user %}

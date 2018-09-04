@@ -27,3 +27,10 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
+    console_command.csv_import:
+        class: App\Command\CsvImportCommand
+        arguments:
+            - "@doctrine.orm.entity_manager"
+        tags:
+            - { name: console.command }
+

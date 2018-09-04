@@ -3,6 +3,7 @@ const orders = document.getElementById('orders');
 if (orders) {
     orders.addEventListener('click', (e) => {
         if (e.target.className === 'btn btn-danger delete-order') {
+            console.log();
             if (confirm("Are you sure?")) {
                 const id = e.target.getAttribute('data-id')
 

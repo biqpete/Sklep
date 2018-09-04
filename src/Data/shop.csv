@@ -1,0 +1,4 @@
+id,user_id,name,cpu,ram,drive,screen,price,date,order_name,comment,is_sent
+1,22,c,i7,16,NULL,10,1200,"2018-08-14 10:53:53","yoman",hey,1
+2,2,a,i5,NULL,128,NULL,600,"2018-08-14 11:49:09","yeman",NULL,0
+3,2,a,i7,NULL,128,13,1200,"2018-08-14 11:49:14","yaman",NULL,1

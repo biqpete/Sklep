@@ -3,13 +3,13 @@
 {% block title %} {{ order.name }} {% endblock %}
 
 {% block body %}
-    <h1>{% trans %}Order name{% endtrans %}: {{ order.orderName }}</h1>
-    <p>cpu: {{ order.cpu }}</p>
-    <p>ram: {{ order.ram }}</p>
-    <p>{% trans %}drive{% endtrans %}: {{ order.drive }}</p>
-    <p>{% trans %}screen{% endtrans %}: {{ order.screen }}</p>
-    <p class="text text-success">{% trans %}price{% endtrans %}: {{ orderPrice }} {{ currency }}</p>
-    <p>{% trans %}order date{% endtrans %}: {{ order.date|date('Y-m-d H:i:s') }}</p>
+    <h1>{% trans %}<i class="fas fa-file-signature"></i>Order name{% endtrans %}: {{ order.orderName }}</h1>
+    <p><i class="fa fa-microchip"></i> cpu: {{ order.cpu }}</p>
+    <p><i class="fas fa-memory"></i> ram: {{ order.ram }}</p>
+    <p><i class="fas fa-hdd"></i> {% trans %}drive{% endtrans %}: {{ order.drive }}</p>
+    <p><i class="fas fa-desktop"></i> {% trans %}screen{% endtrans %}: {{ order.screen }}</p>
+    <p class="text text-success"><i class="fas fa-dollar-sign"></i> {% trans %}price{% endtrans %}: {{ orderPrice }} {{ currency }}</p>
+    <p><i class="fas fa-calendar-alt"></i> {% trans %}order date{% endtrans %}: {{ order.date|date('Y-m-d H:i:s') }}</p>
     <hr>
     <a href="/">{% trans %}Go Back{% endtrans %}</a>
 {% endblock %}

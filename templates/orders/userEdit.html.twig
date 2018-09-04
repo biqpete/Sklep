@@ -5,8 +5,16 @@
 {% block body %}
     <hr>
     <div>
-    {{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
-    {{ form_widget(form) }}
-    {{ form_end(form) }}
+        {{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+        {#<img src="/img/users/{{ userImageName }}" />#}
+        {#<img src="{{ asset('/relative/path/to/image.jpg') | imagine_filter('my_thumb') }}" />#}
+        {#<img src="{{ asset('/img/users/'{{ userImageName }}) | imagine_filter('my_thumb') }}" />#}
+        {% if userImageName is empty %}
+            <p>No image selected</p>
+        {% elseif userImageName is defined %}
+            <img src="{{ vich_uploader_asset(user, 'imageFile')  | imagine_filter('my_thumb')}}">
+        {% endif %}
     </div>
 {% endblock %}

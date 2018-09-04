@@ -1,0 +1,6 @@
+id,username,password,email,locale,roles,hash,is_active,first_name,second_name,image_name,image_size,updated_at
+1,pau,yoman,gef@dedf.com,NULL,"a:1:{i:0;s:9:"ROLE_USER";}",NULL,1,mark,elo,NULL,NULL,NULL
+2,pow,namoe,fed@fegw.com,NULL,"a:1:{i:0;s:9:"ROLE_USER";}",NULL,1,peo,tao,NULL,NULL,NULL
+3,peu,dease,fgwgw@grwg.com,NULL,"a:1:{i:0;s:9:"ROLE_USER";}",NULL,0,emma,joman,NULL,NULL,NULL
+4,phi,defse,fgw@grwg.com,NULL,"a:1:{i:0;s:9:"ROLE_USER";}",NULL,0,emema,jomean,NULL,NULL,NULL
+5,pur,debse,fggw@grwg.com,NULL,"a:1:{i:0;s:9:"ROLE_USER";}",NULL,0,emmka,jomakn,NULL,NULL,NULL

@@ -256,6 +256,8 @@ class OrderController extends Controller
         $form1 = $this->createForm(UserDataEditType::class, $user);
         $form1->handleRequest($request);
 
+        $userImageName = $user->getImageName();
+
         if ($form1->isSubmitted() && $form1->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
@@ -264,7 +266,9 @@ class OrderController extends Controller
         }
 
         return $this->render('orders/userEdit.html.twig', [
-            'form' => $form1->createView()
+            'form' => $form1->createView(),
+            'userImageName' => $userImageName,
+            'user' => $user
         ]);
     }
 
