@@ -34,3 +34,8 @@ services:
         tags:
             - { name: console.command }
 
+    invoice_service:
+        class: App\Service\InvoiceService
+        public: true
+        arguments:
+            - "@knp_snappy.pdf"

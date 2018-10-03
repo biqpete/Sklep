@@ -24,15 +24,6 @@ class OrderTypeEdit extends AbstractType
         $form
             ->add('name', HiddenType::class, array('attr' =>
                 array('class' => 'form-control')))
-//            ->add('cpu', ChoiceType::class, array(
-//                'attr' => array('class' => 'form-control'),
-//                'choices'  => array(
-//                    'none' => '0',$order->setPrice(($order->getPrice())),
-//                    'i3' => 'i3',$order->setPrice(($order->getPrice())+200),
-//                    'i5' => 'i5',$order->setPrice(($order->getPrice())+400),
-//                    'i7' => 'i7',$order->setPrice(($order->getPrice())+600)
-//                )
-//            ))
             ->add('orderName', TextType::class,[
                 'attr' => [
                     'class' => 'form-control'

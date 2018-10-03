@@ -102,6 +102,22 @@ class User implements AdvancedUserInterface, \Serializable, EquatableInterface
     private $file;
 
     /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param \DateTime $updatedAt
+     */
+    public function setUpdatedAt(\DateTime $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      *
      * @var string

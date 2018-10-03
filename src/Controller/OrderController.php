@@ -10,6 +10,7 @@ use App\Entity\Order;
 use App\Form\UserDataEditType;
 use App\Repository\OrderRepository;
 use Doctrine\DBAL\Exception\NotNullConstraintViolationException;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Vich\UploaderBundle\Form\Type\VichImageType;
+use App\Controller\InvoiceController;
 
 class OrderController extends Controller
 {
@@ -120,6 +122,17 @@ class OrderController extends Controller
             $entityManager->persist($order);
             $entityManager->flush();
 
+
+
+            $html = $this->renderView('invoice.html.twig', [
+                'order' => $order
+            ]);
+            $userName = $user->getUsername();
+            $orderName = $order->getOrderName();
+            $this->get("invoice_service")->pdfAction($html,$userName,$orderName);
+
+
+
             $message = (new \Swift_Message('Order accepted ' . ucfirst($user->getUsername()) . '!'))
                 ->setFrom('petermailer777@gmail.com')
                 ->setTo($user->getEmail())
@@ -133,7 +146,11 @@ class OrderController extends Controller
                     ' drive: ' . $order->getDrive() .
                     ' screen:' . $order->getScreen() .
                     ' price:' . $order->getPrice()
-                );
+                )
+//                ->setBody($this->render('invoice.html.twig',[
+//                    'order' => $order
+//                ]))
+                ->attach(\Swift_Attachment::fromPath('invoices/'.$userName.$orderName.'invoice.pdf'));
             $mailer->send($message);
 
             return $this->redirectToRoute('order_list');
@@ -267,7 +284,6 @@ class OrderController extends Controller
 
         return $this->render('orders/userEdit.html.twig', [
             'form' => $form1->createView(),
-            'userImageName' => $userImageName,
             'user' => $user
         ]);
     }

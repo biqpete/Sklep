@@ -46,6 +46,8 @@
                     {#<h5 class="text-success">{{ totalPrice }} PLN</h5>#}
                 {#{% endif %}#}
                 </tbody>
+                {{ knp_pagination_render(orders) }}
+
             </table>
         </div>
     {% else %}

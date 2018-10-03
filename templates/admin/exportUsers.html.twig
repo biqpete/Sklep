@@ -332,7 +332,8 @@
                 <div class="input-group">
                     <input type="text" name="q" class="form-control" placeholder="Search...">
                     <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                </button>
               </span>
                 </div>
             </form>
@@ -514,8 +515,8 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                All orders
-                <small>manage all orders</small>
+                Import users
+                <small>from CSV file</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -529,79 +530,30 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box">
-                        <div class="box-header">
-                            <h3 class="box-title">Orders</h3>
-                        </div>
-                        <!-- /.box-header -->
                         <div class="box-body">
-                            <table id="orders" class="table table-bordered table-hover">
-                                <form method="get" action="{{ path('admin_results_orders') }}">
-                                    <div class="form-inline">
-                                        <p class="mb-2 mr-sm-2">Search by username:</p>
-                                        <label class="sr-only" for="inlineFormInput">Username</label>
-                                        <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="search_input"
-                                               placeholder="Username" name="q">
-                                        <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
-                                        <a href="{{ asset('admin/all-orders') }}" class="btn btn-success"><i class="fa fa-circle-o"></i> Show all</a>
-                                    </div>
-                                </form>
-                                <thead>
-                                <tr>
-                                    {#<th>User</th>#}
-                                    {#<th>Order</th>#}
-                                    {#<th>Comment</th>#}
-                                    {#<th>Date</th>#}
-                                    {#<th>Status</th>#}
-                                    {#<th>Price</th>#}
-                                    {#<th>Actions</th>#}
-                                    <th>{{ knp_pagination_sortable(orders, 'User', 'o.name') }}</th>
-                                    <th>{{ knp_pagination_sortable(orders, 'Order', 'o.orderName') }}</th>
-                                    <th>{{ knp_pagination_sortable(orders, 'Comment', 'o.comment') }}</th>
-                                    <th>{{ knp_pagination_sortable(orders, 'Date', 'o.date') }}</th>
-                                    <th>{{ knp_pagination_sortable(orders, 'Status', 'o.isSent') }}</th>
-                                    <th>{{ knp_pagination_sortable(orders, 'Price', 'o.price') }}</th>
-                                </tr>
-                                </thead>
 
-                                <tbody>
-                                {% if orders is defined %}
-                                    {% for order in orders %}
-                                        <tr>
-                                            <td>{{ order.name }}</td>
-                                            <td>{{ order.orderName }}</td>
-                                            <td>{{ order.comment }}</td>
-                                            <td>{{ order.date| date('Y-m-d H:i:s') }}</td>
-                                            <td>{{ order.isSent ? 'Sent' : 'Preparing' }}</td>
-                                            <td>{{ order.price }} {{ currency }}</td>
-                                            <td>
-                                                {#<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">#}
-                                                {#Launch Default Modal#}
-                                                {#</button>#}
-                                                <a href="/admin/show/{{ order.id }}"
-                                                   class="btn btn-dark">{% trans %}Show{% endtrans %}</a>
-                                                <a href="/admin/edit/{{ order.id }}"
-                                                   class="btn btn-light">{% trans %}Edit{% endtrans %}</a>
-                                                {% if is_granted('ROLE_ADMIN') %}
-                                                    <a href="/admin/all-orders" class="btn btn-danger delete-order"
-                                                       data-id="{{ order.id }}">{% trans %}Delete{% endtrans %}</a>
-                                                {% endif %}
-                                                {% if is_granted('ROLE_ADMIN') %}
-                                                    <a href="/admin/delete_user/{{ order.user.id }}"
-                                                       class="btn btn-danger delete-user"
-                                                       data-id="{{ order.name }}">{% trans %}Delete user{% endtrans %}</a>
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                        {#{% set totalPrice = totalPrice + order.price %}#}
-                                    {% endfor %}
-                                    <h3 class="text-info">Total price: {{ totalPrice }} {{ currency }}</h3>
-                                {% endif %}
-                                {% if orders is empty %}
-                                    <h5 class="text-danger">No orders</h5>
-                                {% endif %}
-                                </tbody>
-                                {{ knp_pagination_render(orders) }}
-                            </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            {% for message in app.flashes('error') %}
+                                <div class="flash-error">
+                                    <span class="error text-danger"> {{ message }} </span>
+                                </div>
+                            {% endfor %}
+                            {% if success is defined %}
+                                <h4 class="text-success">{{ success }}</h4>
+                            {% endif %}
                         </div>
                         <!-- /.box-body -->
                     </div>

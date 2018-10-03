@@ -116,6 +116,18 @@
     "knplabs/knp-paginator-bundle": {
         "version": "v2.8.0"
     },
+    "knplabs/knp-snappy": {
+        "version": "v1.0.4"
+    },
+    "knplabs/knp-snappy-bundle": {
+        "version": "1.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.5",
+            "ref": "c81bdcf4a9d4e7b1959071457f9608631865d381"
+        }
+    },
     "lcobucci/jwt": {
         "version": "3.2.4"
     },
@@ -140,6 +152,9 @@
             "ref": "7f6676627c1ceeeee204553d24a0545d5f918b7b"
         }
     },
+    "markbaker/complex": {
+        "version": "1.4.6"
+    },
     "monolog/monolog": {
         "version": "1.23.0"
     },
@@ -154,6 +169,12 @@
     },
     "ocramius/proxy-manager": {
         "version": "2.2.0"
+    },
+    "onurb/excel-bundle": {
+        "version": "1.0.0"
+    },
+    "phpoffice/phpspreadsheet": {
+        "version": "1.4.0"
     },
     "psr/cache": {
         "version": "1.0.1"

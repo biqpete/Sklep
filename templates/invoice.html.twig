@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Welcome!</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <!-- Bootstrap core CSS -->
+    {#<link rel="stylesheet" href="https://bootswatch.com/4/darkly/bootstrap.min.css">#}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+<body>
+
+<h1><i class="fas fa-file-signature"></i>Order name: {{ order.orderName }}</h1>
+<p><i class="fa fa-microchip"></i> cpu: {{ order.cpu }}</p>
+<p><i class="fas fa-memory"></i> ram: {{ order.ram }}</p>
+<p><i class="fas fa-hdd"></i> drive: {{ order.drive }}</p>
+<p><i class="fas fa-desktop"></i> screen: {{ order.screen }}</p>
+<p class="text text-success"><i class="fas fa-dollar-sign"></i> price: {{ order.price }} $</p>
+<p><i class="fas fa-calendar-alt"></i> order date: {{ order.date|date('Y-m-d H:i:s') }}</p>
+<hr>
+
+{#<p>{{ cpu }}</p>#}
+{#<p>{{ ram }}</p>#}
+{#<p>{{ drive }}</p>#}
+{#<p>{{ screen }}</p>#}
+{#<p>{{ price }}</p>#}
+
+</body>
+</html>
