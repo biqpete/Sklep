@@ -65,17 +65,6 @@ class SecurityController extends Controller
             $user->setHash($activationHash);
             $user->setIsActive(false);
 
-            $message = (new \Swift_Message("Activate your account on Peter's Shop"))
-                ->setFrom('petermailer777@gmail.com')
-                ->setTo($user->getEmail())
-//                    ->setTo("ochenx@gmail.com")
-                ->setBody("Hello ".ucfirst($user->getUsername()).'! '.
-                    "Click the link below to activate your account ".
-                    "http://localhost:8000/auth/".$activationHash
-                )
-            ;
-            $mailer->send($message);
-
             // 3) Encode the password (you could also do this via Doctrine listener)
             $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);
@@ -95,6 +84,17 @@ class SecurityController extends Controller
 
                 return $this->redirectToRoute('register');
             }
+
+            $message = (new \Swift_Message("Activate your account on Peter's Shop"))
+                ->setFrom('petermailer777@gmail.com')
+                ->setTo($user->getEmail())
+//                    ->setTo("ochenx@gmail.com")
+                ->setBody("Hello ".ucfirst($user->getUsername()).'! '.
+                    "Click the link below to activate your account ".
+                    "http://localhost:8000/auth/".$activationHash
+                )
+            ;
+            $mailer->send($message);
 
             $this->addFlash(
                 'notice',

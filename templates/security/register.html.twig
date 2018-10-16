@@ -29,7 +29,15 @@
         {% endif %}
         <div id="form">
             {{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
-            {{ form_row(form.username) }}
+            {{ form_row(form.username, {
+                'label' : 'Username',
+                attr : {
+                    class: 'foo',
+                },
+                placeholder: 'Select yoo'
+            }) }}
+
+            {#{{ dump(form.username.vars) }}#}
             {{ form_row(form.email) }}
             {{ form_row(form.plainPassword.first) }}
             {{ form_row(form.plainPassword.second) }}
