@@ -3,7 +3,16 @@
 {% block title %} New Order {% endblock %}
 
 {% block body %}
-    {{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
-    {{ form_widget(form) }}
-    {{ form_end(form) }}
+    <style>
+        .form{
+            margin-top:70px;
+        }
+    </style>
+    <div class="container">
+        <div class="form">
+            {{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}

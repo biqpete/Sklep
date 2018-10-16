@@ -5,3 +5,4 @@ twig:
     form_themes:
       - bootstrap_4_layout.html.twig
       - _formTheme.html.twig
+      - base.html.twig

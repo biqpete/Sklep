@@ -8,14 +8,9 @@
             text-align: center;
             margin-top: 70px;
         }
-
         .example-wrapper code {
             background: #F5F5F5;
             padding: 2px 6px
-        }
-
-        #register_button {
-            margin-left: 5px;
         }
     </style>
 
@@ -23,7 +18,7 @@
         <h1>{% trans %}Login page{% endtrans %}:</h1>
 
         {% if registered is defined %}
-        <p class="text-success">{{ registered }}</p>
+            <p class="text-success">{{ registered }}</p>
         {% endif %}
 
         {% for message in app.flashes('notice') %}
@@ -33,30 +28,29 @@
         {% endfor %}
 
         {% if error.messageKey is defined %}
-        {% if error is defined%}
-            <span class="error text-danger"> {{ error.messageKey }} </span>
-        {% endif %}
+            {% if error is defined%}
+                <span class="error text-danger"> {{ error.messageKey }} </span>
+            {% endif %}
         {% endif %}
 
         <div id="form">
             <form action="{{ path('login') }}" method="POST">
-
-                <div class="form-group row">
-                    <label for="username_input" class="col-2 col-form-label">Username</label>
-                    <div class="col-10">
+                <div class="form-group d-flex justify-content-center">
+                    <div class="col-lg-4 col-lg-offset-4 col-centered">
+                        <label for="username_input">Username</label>
                         <input class="form-control" type="text" {% if last_username is defined %} value="{{ last_username }}" {% endif %} placeholder="Username or email here..." id="username_input" name="_username">
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label for="password_input" class="col-2 col-form-label">Password</label>
-                    <div class="col-10">
+                <div class="form-group d-flex justify-content-center">
+                    <div class="col-lg-4 col-lg-offset-4 col-centered">
+                        <label for="password_input">Password</label>
                         <input class="form-control" type="password" id="password_input" name="_password">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">{% trans %}Login{% endtrans %}</button>
-
-                <a href="{{ path('register') }}" id="register_button" class="btn btn-success">{% trans %}Register{% endtrans %}</a>
-
+                <div class="form-group d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary">{% trans %}Login{% endtrans %}</button>
+                    <a href="{{ path('register') }}" id="register_button" class="btn btn-success">{% trans %}Register{% endtrans %}</a>
+                </div>
             </form>
         </div>
     </div>
